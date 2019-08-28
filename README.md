@@ -1,4 +1,4 @@
-# charts
+# Animations
 
 Flutter animation samples.
 

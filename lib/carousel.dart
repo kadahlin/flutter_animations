@@ -1,35 +1,16 @@
 import 'package:flutter/material.dart';
 
-class PriceTags extends StatefulWidget {
+class Carousel extends StatefulWidget {
+  final List<Widget> children;
+
+  Carousel({@required this.children});
+
   @override
-  _PriceTagsState createState() => _PriceTagsState();
+  _CarouselState createState() => _CarouselState();
 }
 
-class _PriceTagsState extends State<PriceTags>
+class _CarouselState extends State<Carousel>
     with SingleTickerProviderStateMixin {
-  var tags = [
-    Text(
-      "1.99",
-      style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold),
-    ),
-    Text(
-      "2.99",
-      style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold),
-    ),
-    Text(
-      "3.99",
-      style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold),
-    ),
-    Text(
-      "4.99",
-      style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold),
-    ),
-    Text(
-      "5.99",
-      style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold),
-    ),
-  ];
-
   int currentIndex;
   bool reversing = false;
   AnimationController controller;
@@ -51,17 +32,17 @@ class _PriceTagsState extends State<PriceTags>
     });
 
     _rightCenterAnimation =
-        Tween(begin: Offset(100.0, 0.0), end: Offset(0.0, 0.0))
+        Tween(begin: Offset(1.0, 0.0), end: Offset(0.0, 0.0))
             .animate(controller);
     _centerLeftAnimation =
-        Tween(begin: Offset(0.0, 0.0), end: Offset(-100.0, 0.0))
+        Tween(begin: Offset(0.0, 0.0), end: Offset(-1.0, 0.0))
             .animate(controller);
 
     _leftCenterAnimation =
-        Tween(begin: Offset(-100.0, 0.0), end: Offset(0.0, 0.0))
+        Tween(begin: Offset(-1.0, 0.0), end: Offset(0.0, 0.0))
             .animate(controller);
     _centerRightAnimation =
-        Tween(begin: Offset(0.0, 0.0), end: Offset(100.0, 0.0))
+        Tween(begin: Offset(0.0, 0.0), end: Offset(1.0, 0.0))
             .animate(controller);
 
     _growScaleAnimation = Tween(begin: 0.0, end: 1.0).animate(controller);
@@ -71,36 +52,27 @@ class _PriceTagsState extends State<PriceTags>
   @override
   Widget build(BuildContext context) {
     print('on build the current index is $currentIndex');
+    return GestureDetector(
+      onHorizontalDragEnd: _onUserSwipe,
+      child: AnimatedBuilder(
+          animation: controller,
+          builder: (context, child) {
+            var children = <Widget>[];
 
-    return Center(
-      child: GestureDetector(
-        onHorizontalDragEnd: _onUserSwipe,
-        child: Container(
-          height: 100.0,
-          color: Colors.blue,
-          child: AnimatedBuilder(
-              animation: controller,
-              builder: (context, child) {
-                var children = <Widget>[];
+            widget.children.asMap().forEach((index, child) {
+              var scale = _getScaleOffset(index);
+              var transform = _getTranslateOffset(index);
 
-                tags.asMap().forEach((index, tag) {
-                  var scale = _getScaleOffset(index, tag);
-                  var transform = _getTranslateOffset(index, tag);
-
-                  children.add(Transform.translate(
-                    offset: transform,
-                    child: Transform.scale(
-                      scale: scale,
-                      child: Center(
-                        child: tag,
-                      ),
-                    ),
-                  ));
-                });
-                return Stack(overflow: Overflow.visible, children: children);
-              }),
-        ),
-      ),
+              children.add(FractionalTranslation(
+                translation: transform,
+                child: Transform.scale(
+                  scale: scale,
+                  child: child,
+                ),
+              ));
+            });
+            return Stack(overflow: Overflow.visible, children: children);
+          }),
     );
   }
 
@@ -115,7 +87,7 @@ class _PriceTagsState extends State<PriceTags>
           currentIndex -= 1;
         });
       });
-    } else if (details.primaryVelocity < 0 && currentIndex != tags.length - 1) {
+    } else if (details.primaryVelocity < 0 && currentIndex != widget.children.length - 1) {
       //right to left
       reversing = false;
       controller.forward().whenComplete(() {
@@ -127,7 +99,7 @@ class _PriceTagsState extends State<PriceTags>
     }
   }
 
-  double _getScaleOffset(int index, Text tag) {
+  double _getScaleOffset(int index) {
     var otherIndex = currentIndex + (reversing ? -1 : 1);
 
     if (index == currentIndex) {
@@ -139,7 +111,7 @@ class _PriceTagsState extends State<PriceTags>
     }
   }
 
-  Offset _getTranslateOffset(int index, Text tag) {
+  Offset _getTranslateOffset(int index) {
     var otherIndex = currentIndex + (reversing ? -1 : 1);
 
     if (reversing) {
