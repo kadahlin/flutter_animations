@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:charts/carousel.dart';
+import 'package:flutter_animations/carousel.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(HomePage());
@@ -31,15 +31,15 @@ class HomePage extends StatelessWidget {
     var random = Random();
     final dollars = random.nextInt(100).toString();
     final cents = random.nextDouble().toStringAsFixed(2).substring(2);
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            "$dollars.$cents",
-            style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold),
-          ),
-          Text(lorem)
-        ],
-      );
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          "$dollars.$cents",
+          style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold),
+        ),
+        Text(lorem)
+      ],
+    );
   }
 }

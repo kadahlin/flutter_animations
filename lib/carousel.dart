@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 
 class Carousel extends StatefulWidget {
   final List<Widget> children;
+  final Duration duration;
 
-  Carousel({@required this.children});
+  Carousel(
+      {@required this.children,
+      this.duration = const Duration(milliseconds: 400)});
 
   @override
   _CarouselState createState() => _CarouselState();
@@ -25,8 +28,7 @@ class _CarouselState extends State<Carousel>
   void initState() {
     super.initState();
     currentIndex = 0;
-    controller =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 300));
+    controller = AnimationController(vsync: this, duration: widget.duration);
     controller.addListener(() {
       setState(() {});
     });
@@ -51,7 +53,6 @@ class _CarouselState extends State<Carousel>
 
   @override
   Widget build(BuildContext context) {
-    print('on build the current index is $currentIndex');
     return GestureDetector(
       onHorizontalDragEnd: _onUserSwipe,
       child: AnimatedBuilder(
@@ -77,7 +78,6 @@ class _CarouselState extends State<Carousel>
   }
 
   void _onUserSwipe(DragEndDetails details) {
-    print('the user has done a horizontal drag end');
     if (details.primaryVelocity > 0 && currentIndex != 0) {
       //left to right (reverse)
       reversing = true;
@@ -87,7 +87,8 @@ class _CarouselState extends State<Carousel>
           currentIndex -= 1;
         });
       });
-    } else if (details.primaryVelocity < 0 && currentIndex != widget.children.length - 1) {
+    } else if (details.primaryVelocity < 0 &&
+        currentIndex != widget.children.length - 1) {
       //right to left
       reversing = false;
       controller.forward().whenComplete(() {

@@ -1,5 +1,5 @@
-name: flutter_animations
-description: Collection of animated widgets that can be dropped into existing apps.
+name: example
+description: A new Flutter project to test the flutter_animations library
 
 version: 1.0.0+1
 
@@ -11,10 +11,13 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^0.1.2
+  flutter_animations:
+    path: ../
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
 flutter:
+
   uses-material-design: true
