@@ -16,7 +16,7 @@ class _CarouselState extends State<Carousel>
     with SingleTickerProviderStateMixin {
   int currentIndex;
   bool reversing = false;
-  AnimationController controller;
+  AnimationController _controller;
   Animation<Offset> _rightCenterAnimation;
   Animation<Offset> _centerLeftAnimation;
   Animation<Offset> _leftCenterAnimation;
@@ -28,27 +28,27 @@ class _CarouselState extends State<Carousel>
   void initState() {
     super.initState();
     currentIndex = 0;
-    controller = AnimationController(vsync: this, duration: widget.duration);
-    controller.addListener(() {
+    _controller = AnimationController(vsync: this, duration: widget.duration);
+    _controller.addListener(() {
       setState(() {});
     });
 
     _rightCenterAnimation =
         Tween(begin: Offset(1.0, 0.0), end: Offset(0.0, 0.0))
-            .animate(controller);
+            .animate(_controller);
     _centerLeftAnimation =
         Tween(begin: Offset(0.0, 0.0), end: Offset(-1.0, 0.0))
-            .animate(controller);
+            .animate(_controller);
 
     _leftCenterAnimation =
         Tween(begin: Offset(-1.0, 0.0), end: Offset(0.0, 0.0))
-            .animate(controller);
+            .animate(_controller);
     _centerRightAnimation =
         Tween(begin: Offset(0.0, 0.0), end: Offset(1.0, 0.0))
-            .animate(controller);
+            .animate(_controller);
 
-    _growScaleAnimation = Tween(begin: 0.0, end: 1.0).animate(controller);
-    _shrinkScaleAnimation = Tween(begin: 1.0, end: 0.0).animate(controller);
+    _growScaleAnimation = Tween(begin: 0.0, end: 1.0).animate(_controller);
+    _shrinkScaleAnimation = Tween(begin: 1.0, end: 0.0).animate(_controller);
   }
 
   @override
@@ -56,7 +56,7 @@ class _CarouselState extends State<Carousel>
     return GestureDetector(
       onHorizontalDragEnd: _onUserSwipe,
       child: AnimatedBuilder(
-          animation: controller,
+          animation: _controller,
           builder: (context, child) {
             var children = <Widget>[];
 
@@ -81,9 +81,9 @@ class _CarouselState extends State<Carousel>
     if (details.primaryVelocity > 0 && currentIndex != 0) {
       //left to right (reverse)
       reversing = true;
-      controller.forward().whenComplete(() {
+      _controller.forward().whenComplete(() {
         setState(() {
-          controller.reset();
+          _controller.reset();
           currentIndex -= 1;
         });
       });
@@ -91,9 +91,9 @@ class _CarouselState extends State<Carousel>
         currentIndex != widget.children.length - 1) {
       //right to left
       reversing = false;
-      controller.forward().whenComplete(() {
+      _controller.forward().whenComplete(() {
         setState(() {
-          controller.reset();
+          _controller.reset();
           currentIndex += 1;
         });
       });
